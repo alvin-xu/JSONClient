@@ -8,7 +8,10 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +24,7 @@ import cn.redarmy.service.GoodService;
 
 public class GoodServiceImpl implements GoodService{
 
+	String url="http://192.168.3.101:8080/StrutsJson/csdn/";
 	 // 获取最新的商品信息   
     /* (non-Javadoc)  
      * @see cn.redarmy.service.Impl.GoodService#findAll()  
@@ -29,11 +33,13 @@ public class GoodServiceImpl implements GoodService{
     public List<Good> findAll() {   
         // 创建请求HttpClient客户端   
         HttpClient httpClient = new DefaultHttpClient();   
-        // 创建请求的url   
-        String url = "http://192.168.3.101:8080/StrutsJson/csdn/listNewsGoods.action";   
+        
+        // 创建请求的url，通过get方法向服务器传递参数  
+        String url1 =url+"listNewsGoods.action?param=tttt";   
+        
         try {   
             // 创建请求的对象   
-            HttpGet get = new HttpGet(new URI(url));   
+            HttpGet get = new HttpGet(new URI(url1));   
             // 发送get请求   
             HttpResponse httpResponse = httpClient.execute(get);   
             // 如果服务成功返回响应   
@@ -77,13 +83,21 @@ public class GoodServiceImpl implements GoodService{
         // 创建请求HttpClient客户端   
         HttpClient httpClient = new DefaultHttpClient();   
         // 创建请求的url   
-        String url = "http://192.168.3.101:8080/StrutsJson/csdn/findGood.action";   
+        String url2 = url+"findGood.action";   
         try {   
-        	Log.d("GET", "start request");
-            // 创建请求的对象   
-            HttpGet get = new HttpGet(url);   
-            // 发送get请求   
-            HttpResponse httpResponse = httpClient.execute(get);
+        	Log.d("POST", "start request");
+            // 创建post请求的对象   
+            HttpPost post=new HttpPost(url2);
+            
+            JSONObject data=new JSONObject();
+            data.put("name", "xubinbin");
+            data.put("age", 22);
+            data.put("gender","男");
+            
+            post.setEntity(new StringEntity(data.toString(), HTTP.UTF_8));
+            
+            // 发送post请求   
+            HttpResponse httpResponse = httpClient.execute(post);
             Log.d("GET","get status"+httpResponse.getStatusLine().getStatusCode());
             
             
