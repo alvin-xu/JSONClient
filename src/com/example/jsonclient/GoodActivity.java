@@ -1,8 +1,15 @@
 package com.example.jsonclient;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import cn.redarmy.domain.Good;
 import cn.redarmy.service.GoodService;
@@ -44,7 +51,7 @@ public class GoodActivity extends Activity {
 		            e.printStackTrace();  
 		        }*/
 		     //解析单个对象   
-		       try {   
+		      /* try {   
 		        	Log.d("MAIN", "find by id");
 		            Good good = goodService.findById();   
 		            ListView listView = (ListView) this.findViewById(R.id.goods);   
@@ -64,7 +71,34 @@ public class GoodActivity extends Activity {
 		        } catch (Exception e) {   
 		            Log.v("error", "网络连接失败");   
 		            e.printStackTrace();   
-		        }   
+		        }   */
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				HttpClient httpClient=new DefaultHttpClient();
+				String url="http://192.168.3.106:8080/SSHJsonServer/student/getStudent.action?id=1";
+				HttpGet httpGet=new HttpGet(url);
+				try {
+					Log.d("Client", "send request with get");
+					HttpResponse response=httpClient.execute(httpGet);
+					Log.d("Client","status:"+response.getStatusLine().getStatusCode());
+					
+					if(response.getStatusLine().getStatusCode()==200){
+						Log.d("Client","result:"+response.getEntity().toString());
+					}
+					
+				} catch (ClientProtocolException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}).start();
+		
 	}
 
 	@Override
